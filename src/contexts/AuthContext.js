@@ -39,9 +39,9 @@ export function AuthProvider({ children }) {
       displayName: username,
     });
 
-    const user = auth.currentUser();
+    const user = auth.currentUser;
 
-    setCurrentUser(...user);
+    setCurrentUser(user);
   }
 
   // Login
