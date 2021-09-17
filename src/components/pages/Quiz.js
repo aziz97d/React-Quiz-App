@@ -1,7 +1,9 @@
+import { getDatabase, ref, set } from "@firebase/database";
 import _ from "lodash";
 import React, { useEffect, useReducer } from "react";
-import { useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
 import { useState } from "react/cjs/react.development";
+import { useAuth } from "../../contexts/AuthContext";
 import useQuestions from "../../hooks/useQuestions";
 import Answers from "../Answers";
 import MiniPlayer from "../MiniPlayer";
@@ -32,6 +34,9 @@ const Quiz = () => {
   const { loading, error, questions } = useQuestions(id);
   const [qna, dispatch] = useReducer(reducer, initialState);
   const [currentQuestion, setCurrentQuestion] = useState(0);
+  const history = useHistory();
+
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     dispatch({
@@ -60,6 +65,30 @@ const Quiz = () => {
       setCurrentQuestion((prevQuestion) => prevQuestion - 1);
     }
   }
+
+  // Answer Submit
+  async function handleSubmit() {
+    const { uid } = currentUser;
+
+    const db = getDatabase();
+    const resultRef = ref(db, `result/${uid}`);
+
+    await set(resultRef, {
+      [id]: qna,
+    });
+
+    history.push({
+      pathname: `result/${id}`,
+      state: {
+        qna,
+      },
+    });
+  }
+
+  //Calculate progress width
+  const progressWidth =
+    questions.length > 0 ? (100 / questions.length) * (currentQuestion + 1) : 0;
+
   return (
     <>
       {loading && <div>Loading...</div>}
@@ -73,7 +102,12 @@ const Quiz = () => {
             options={qna[currentQuestion].options}
             handleChange={handleAnswerChange}
           />
-          <ProgressBar />
+          <ProgressBar
+            next={handleNextQuestion}
+            previous={handlePrevQuestion}
+            submit={handleSubmit}
+            progressWidth={progressWidth}
+          />
           <MiniPlayer />
         </>
       )}

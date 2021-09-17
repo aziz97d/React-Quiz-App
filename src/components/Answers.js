@@ -10,6 +10,7 @@ const Answers = ({ options, handleChange }) => {
           <Checkbox
             className={classes.answer}
             text={option.title}
+            checked={option.checked}
             onChange={(e) => {
               handleChange(e, index);
             }}
