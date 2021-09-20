@@ -109,7 +109,7 @@ const Quiz = () => {
             submit={handleSubmit}
             progressWidth={progressWidth}
           />
-          <MiniPlayer />
+          <MiniPlayer videoID={id} title={qna[currentQuestion].title} />
         </>
       )}
     </>
