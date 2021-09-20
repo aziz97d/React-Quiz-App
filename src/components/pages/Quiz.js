@@ -78,7 +78,7 @@ const Quiz = () => {
     });
 
     history.push({
-      pathname: `result/${id}`,
+      pathname: `/result/${id}`,
       state: {
         qna,
       },
@@ -99,6 +99,7 @@ const Quiz = () => {
           <h4>Question can have multiple answers</h4>
 
           <Answers
+            input={true}
             options={qna[currentQuestion].options}
             handleChange={handleAnswerChange}
           />
